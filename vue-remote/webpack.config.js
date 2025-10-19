@@ -35,6 +35,7 @@ module.exports = {
         "./App": "./src/bootstrap",
       },
       shared: {
+        react: { singleton: true, requiredVersion: "^18.2.0" },
         vue: { singleton: true, requiredVersion: "^3.3.8" },
       },
     }),
