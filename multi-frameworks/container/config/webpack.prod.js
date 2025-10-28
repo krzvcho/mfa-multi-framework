@@ -16,7 +16,7 @@ const prodConfig = {
         new ModuleFederationPlugin({
             name: 'container',
             remotes: {
-                marketing: `marketing@${domain}/marketing/remoteEntry.js`,
+                marketing: `marketing@${domain}/marketing/latest/remoteEntry.js`,
             },
             shared: ['react', 'react-dom']
         })
@@ -24,3 +24,4 @@ const prodConfig = {
 };
 
 module.exports = merge(commonConfig, prodConfig);
+
