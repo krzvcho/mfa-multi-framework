@@ -1,9 +1,21 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 
+let root = null;
+
 const mount = (el) => {
-  ReactDOM.render(<App />, el);
+  if (!root) {
+    root = createRoot(el);
+  }
+  root.render(<App />);
+};
+
+const unmount = () => {
+  if (root) {
+    root.unmount();
+    root = null;
+  }
 };
 
 if (process.env.NODE_ENV === 'development') {
@@ -13,4 +25,4 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-export { mount };
+export { mount, unmount };

@@ -17,10 +17,19 @@ const devConfig = {
       name: 'container',
       filename: 'remoteEntry.js',
       remotes: {
-        marketing: 'marketing@http://localhost:8081/remoteEntry.js'
+        marketing: 'marketing@http://localhost:8081/remoteEntry.js',
       },
-      shared: ['react', 'react-dom']
-    })
+      shared: {
+        react: {
+          singleton: true,
+          requiredVersion: '18.3.1',
+        },
+        'react-dom': {
+          singleton: true,
+          requiredVersion: '18.3.1',
+        },
+      },
+    }),
   ],
 };
 
