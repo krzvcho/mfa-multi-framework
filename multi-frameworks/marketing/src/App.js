@@ -1,21 +1,17 @@
 import React from 'react';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'; // MUI v7 imports
 
 import Landing from './components/Landing';
 import Pricing from './components/Pricing';
-import {
-  StylesProvider,
-  createGenerateClassName,
-} from '@material-ui/core/styles';
 
-const generateClassName = createGenerateClassName({
-  productionPrefix: 'ma',
-});
+const theme = createTheme(); // You can customize the theme if needed
 
-const App = () => {
+const App = ({ history }) => {
   return (
-    <StylesProvider generateClassName={generateClassName}>
-      <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter history={history}>
         <Switch>
           <Route path="/" exact>
             <Landing />
@@ -25,7 +21,7 @@ const App = () => {
           </Route>
         </Switch>
       </BrowserRouter>
-    </StylesProvider>
+    </ThemeProvider>
   );
 };
 
