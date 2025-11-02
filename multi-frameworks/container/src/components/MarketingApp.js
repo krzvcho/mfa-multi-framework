@@ -16,7 +16,10 @@ export default () => {
       },
     });
 
-    history.listen(onParentNavigate);
+    history.listen((location) => {
+      onParentNavigate({ pathname: location.pathname });
+      console.log('Container app navigated to:', location.pathname);
+    });
 
   }, []);
 

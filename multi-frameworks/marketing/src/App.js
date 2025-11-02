@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Switch, Route, Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'; // MUI v7 imports
 
 import Landing from './components/Landing';
@@ -11,7 +11,7 @@ const App = ({ history }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter history={history}>
+      <Router history={history}>
         <Switch>
           <Route path="/" exact>
             <Landing />
@@ -20,7 +20,7 @@ const App = ({ history }) => {
             <Pricing />
           </Route>
         </Switch>
-      </BrowserRouter>
+      </Router>
     </ThemeProvider>
   );
 };

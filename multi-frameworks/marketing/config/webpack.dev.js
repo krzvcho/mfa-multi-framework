@@ -5,6 +5,9 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const commonConfig = require('./webpack.common.js');
 const devConfig = {
   mode: 'development',
+  output: {
+    publicPath: 'http://localhost:8081/',
+  },
   devServer: {
     port: 8081,
     historyApiFallback: {
@@ -18,16 +21,24 @@ const devConfig = {
       exposes: {
         './MarketingApp': './src/bootstrap',
       },
-      // shared: {
-      //   react: {
-      //     singleton: true,
-      //     requiredVersion: '18.3.1',
-      //   },
-      //   'react-dom': {
-      //     singleton: true,
-      //     requiredVersion: '18.3.1',
-      //   },
-      // },
+      shared: {
+        // Critical singletons - prevent multiple instances
+        react: {
+          singleton: true,
+          requiredVersion: '18.3.1',
+          eager: false,
+        },
+        'react-dom': {
+          singleton: true,
+          requiredVersion: '18.3.1',
+          eager: false,
+        },
+        'react-router-dom': {
+          singleton: true,
+          requiredVersion: '5.3.4',
+          eager: false,
+        },
+      },
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html',

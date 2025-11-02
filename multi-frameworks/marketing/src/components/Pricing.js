@@ -165,11 +165,12 @@ export default function Pricing() {
         <Grid container spacing={5} alignItems="flex-end">
           {tiers.map((tier) => (
             <Grid
-              item
               key={tier.title}
-              xs={12}
-              sm={tier.title === 'Enterprise' ? 12 : 6}
-              md={4}
+              size={{ 
+                xs: 12, 
+                sm: tier.title === 'Enterprise' ? 12 : 6, 
+                md: 4 
+              }}
             >
               <Card>
                 <StyledCardHeader
@@ -222,7 +223,7 @@ export default function Pricing() {
         <Container maxWidth="md">
           <Grid container spacing={4} justifyContent="space-evenly">
             {footers.map((footer) => (
-              <Grid item xs={6} sm={3} key={footer.title}>
+              <Grid size={{ xs: 6, sm: 3 }} key={footer.title}>
                 <Typography variant="h6" color="text.primary" gutterBottom>
                   {footer.title}
                 </Typography>
@@ -237,7 +238,7 @@ export default function Pricing() {
                 </ul>
               </Grid>
             ))}
-          </Grid>
+          </Grid>   
           <Box mt={5}>
             <Copyright />
           </Box>

@@ -17,13 +17,21 @@ const prodConfig = {
         './MarketingApp': './src/bootstrap',
       },
       shared: {
+        // Critical singletons - prevent multiple instances
         react: {
           singleton: true,
           requiredVersion: '18.3.1',
+          eager: false,
         },
         'react-dom': {
           singleton: true,
           requiredVersion: '18.3.1',
+          eager: false,
+        },
+        'react-router-dom': {
+          singleton: true,
+          requiredVersion: '5.3.4',
+          eager: false,
         },
       },
     }),
