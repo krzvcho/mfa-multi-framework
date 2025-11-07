@@ -1,8 +1,11 @@
 const { merge } = require('webpack-merge');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
-const commonConfig = require('./webpack.common.js');
-//const packageJson = require('../package.json');
+const webpackCommon = require('./webpack.common');
+const packageJson = require('../package.json');
+
+const { commonConfig, createSharedDeps } = webpackCommon;
+const sharedDeps = createSharedDeps(packageJson.dependencies);
 
 const domain = process.env.PRODUCTION_DOMAIN;
 
@@ -17,25 +20,9 @@ const prodConfig = {
       name: 'container',
       remotes: {
         marketing: `marketing@${domain}/marketing/latest/remoteEntry.js`,
+        auth: `auth@${domain}/auth/latest/remoteEntry.js`,
       },
-      shared: {
-        // Critical singletons - prevent multiple instances
-        react: {
-          singleton: true,
-          requiredVersion: '18.3.1',
-          eager: false,
-        },
-        'react-dom': {
-          singleton: true,
-          requiredVersion: '18.3.1',
-          eager: false,
-        },
-        'react-router-dom': {
-          singleton: true,
-          requiredVersion: '5.3.4',
-          eager: false,
-        },
-      },
+      shared: sharedDeps
     }),
   ],
 };

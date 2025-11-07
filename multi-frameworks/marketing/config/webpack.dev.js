@@ -2,7 +2,12 @@ const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
-const commonConfig = require('./webpack.common.js');
+const webpackCommon = require('./webpack.common');
+const packageJson = require('../package.json');
+
+const { commonConfig, createSharedDeps } = webpackCommon;
+const sharedDeps = createSharedDeps(packageJson.dependencies);
+
 const devConfig = {
   mode: 'development',
   output: {
@@ -21,24 +26,7 @@ const devConfig = {
       exposes: {
         './MarketingApp': './src/bootstrap',
       },
-      shared: {
-        // Critical singletons - prevent multiple instances
-        react: {
-          singleton: true,
-          requiredVersion: '18.3.1',
-          eager: false,
-        },
-        'react-dom': {
-          singleton: true,
-          requiredVersion: '18.3.1',
-          eager: false,
-        },
-        'react-router-dom': {
-          singleton: true,
-          requiredVersion: '5.3.4',
-          eager: false,
-        },
-      },
+      shared: sharedDeps
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html',

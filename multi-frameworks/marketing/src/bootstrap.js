@@ -1,13 +1,21 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createMemoryHistory } from 'history';
+import { createMemoryHistory, createBrowserHistory  } from 'history';
 
 import App from './App';
 
 let root = null;
+let history = null; // Store history outside the mount function
 
-const mount = (el, { onNavigate }) => {
-  const history = createMemoryHistory();
+const mount = (el, { onNavigate, defaultHistory, initialPath }) => {
+  // Only create history once
+  if (!history) {
+    history =
+      defaultHistory ||
+      createMemoryHistory({
+        initialEntries: [initialPath],
+      });
+  }
 
   // Listen for navigation events and notify the container, listener is internal method of history
   history.listen((location) => {
@@ -36,12 +44,14 @@ const unmount = () => {
     root.unmount();
     root = null;
   }
+  // Reset history so it can be recreated on next mount
+  history = null;
 };
 
 if (process.env.NODE_ENV === 'development') {
   const devRoot = document.getElementById('_app-marketing-root');
   if (devRoot) {
-    mount(devRoot, {});
+    mount(devRoot, { defaultHistory: createBrowserHistory() });
   }
 }
 
