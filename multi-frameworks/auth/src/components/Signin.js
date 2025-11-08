@@ -18,7 +18,7 @@ function Copyright() {
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
       <Link component={RouterLink} to="/" color="inherit">
-        Your Website
+        krzvcho
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
