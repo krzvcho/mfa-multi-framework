@@ -20,9 +20,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1, 1.5),
 }));
 
-export default function Header({ signedIn, onSignOut }) {
+export default function Header({ isSignedIn, onSignOut }) {
   const onClick = () => {
-    if (signedIn && onSignOut) {
+    if (isSignedIn && onSignOut) {
       onSignOut();
     }
   };
@@ -49,10 +49,10 @@ export default function Header({ signedIn, onSignOut }) {
             color="primary"
             variant="outlined"
             component={RouterLink}
-            to={signedIn ? '/' : '/auth/signin'}
+            to={isSignedIn ? '/' : '/auth/signin'}
             onClick={onClick}
           >
-            {signedIn ? 'Logout' : 'Login'}
+            {isSignedIn ? 'Logout' : 'Login'}
           </StyledButton>
         </StyledToolbar>
       </StyledAppBar>

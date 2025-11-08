@@ -7,7 +7,7 @@ import App from './App';
 let root = null;
 let history = null; // Store history outside the mount function
 
-const mount = (el, { onNavigate, defaultHistory, initialPath }) => {
+const mount = (el, { onSignIn, onNavigate, defaultHistory, initialPath }) => {
   // Only create history once per mount lifecycle
   if (!history) {
     history =
@@ -27,7 +27,7 @@ const mount = (el, { onNavigate, defaultHistory, initialPath }) => {
   if (!root) {
     root = createRoot(el);
   }
-  root.render(<App history={history} />);
+  root.render(<App onSignIn={onSignIn} history={history} />);
 
   return {
     onParentNavigate({ pathname: nextPathname }) {

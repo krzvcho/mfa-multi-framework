@@ -10,14 +10,25 @@ const AuthAppLazy = lazy(() => import('./components/AuthApp'));
 const theme = createTheme(); // Customize if needed
 
 const App = () => {
+  const [isSignedIn, setIsSignedIn] = React.useState(() => {
+    const storedValue = sessionStorage.getItem('isSignedIn');
+    return storedValue === 'true';
+  });
+
+  React.useEffect(() => {
+    sessionStorage.setItem('isSignedIn', isSignedIn);
+  }, [isSignedIn]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <Header />
+        <Header isSignedIn={isSignedIn} onSignOut={() => setIsSignedIn(false)} />
         <Suspense fallback={<Progress />}>
           <Switch>
-            <Route path="/auth" component={AuthAppLazy} />
+            <Route path="/auth" component={AuthAppLazy} >
+              <AuthAppLazy onSignIn={() => setIsSignedIn(true)} />
+            </Route>
             <Route path="/" component={MarketingAppLazy} />
           </Switch>
         </Suspense>

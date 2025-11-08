@@ -14,14 +14,18 @@ const theme = createTheme({
   },
 });
 
-const App = ({ history }) => {
+const App = ({ history, onSignIn }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router history={history}>
         <Switch>
-          <Route path="/auth/signin" component={SignIn} />
-          <Route path="/auth/signup" component={SignUp} />
+          <Route path="/auth/signin" >
+            <SignIn onSignIn={onSignIn} />
+          </Route>
+          <Route path="/auth/signup" >
+            <SignUp onSignIn={onSignIn} />
+          </Route>
         </Switch>
       </Router>
     </ThemeProvider>
