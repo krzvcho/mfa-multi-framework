@@ -1,42 +1,31 @@
-import { mount, unmount } from 'marketing/MarketingApp';
+import { mount } from 'marketing/MarketingApp';
 import React, { useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default () => {
   const ref = useRef(null);
-  const history = useHistory();
-  const isMountedRef = useRef(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const onParentNavigateRef = useRef(null);
 
+  // Mount the microfrontend once
   useEffect(() => {
     const { onParentNavigate } = mount(ref.current, {
-      initialPath: history.location.pathname,
+      initialPath: location.pathname,
       onNavigate: ({ pathname: nextPathname }) => {
-        const { pathname } = history.location;
-        if (pathname !== nextPathname) {
-          history.push(nextPathname);
-        }
+        navigate(nextPathname);
       },
     });
 
-    isMountedRef.current = true;
+    onParentNavigateRef.current = onParentNavigate;
+  }, []); // Empty dependency - mount once
 
-    const unlisten = history.listen((location) => {
-      onParentNavigate({ pathname: location.pathname });
-      console.log('Container app navigated to:', location.pathname);
-    });
-
-    // Cleanup function to unmount when component is removed
-    return () => {
-      unlisten();
-      // Use queueMicrotask for cleaner async unmount
-      if (isMountedRef.current) {
-        isMountedRef.current = false;
-        queueMicrotask(() => {
-          unmount();
-        });
-      }
-    };
-  }, []);
+  // Sync navigation from container to child
+  useEffect(() => {
+    if (onParentNavigateRef.current) {
+      onParentNavigateRef.current({ pathname: location.pathname });
+    }
+  }, [location]); // Only run when location changes
 
   return <div ref={ref} />;
 };

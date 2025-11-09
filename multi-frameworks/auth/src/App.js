@@ -1,5 +1,5 @@
-import React from 'react';
-import { Switch, Route, Router } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'; // MUI v7 imports
 import SignIn from './components/Signin';
 import SignUp from './components/Signup';
@@ -15,18 +15,25 @@ const theme = createTheme({
 });
 
 const App = ({ history, onSignIn }) => {
+  const [location, setLocation] = useState(history.location);
+
+  useEffect(() => {
+    // Listen to history changes and update location state
+    const unlisten = history.listen((update) => {
+      setLocation(update.location);
+    });
+
+    return unlisten; // Clean up the listener on unmount
+  }, [history]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router history={history}>
-        <Switch>
-          <Route path="/auth/signin" >
-            <SignIn onSignIn={onSignIn} />
-          </Route>
-          <Route path="/auth/signup" >
-            <SignUp onSignIn={onSignIn} />
-          </Route>
-        </Switch>
+      <Router location={location} navigator={history}>
+        <Routes>
+          <Route path="/auth/signin" element={<SignIn onSignIn={onSignIn} />} />
+          <Route path="/auth/signup" element={<SignUp onSignIn={onSignIn} />} />
+        </Routes>
       </Router>
     </ThemeProvider>
   );

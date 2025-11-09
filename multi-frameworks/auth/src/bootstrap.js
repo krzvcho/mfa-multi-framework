@@ -4,35 +4,27 @@ import { createMemoryHistory, createBrowserHistory } from 'history';
 
 import App from './App';
 
-let root = null;
-let history = null; // Store history outside the mount function
-
 const mount = (el, { onSignIn, onNavigate, defaultHistory, initialPath }) => {
   // Only create history once per mount lifecycle
-  if (!history) {
-    history =
-      defaultHistory ||
-      createMemoryHistory({
-        initialEntries: [initialPath],
-      });
+  const history =
+    defaultHistory ||
+    createMemoryHistory({
+      initialEntries: [initialPath],
+    });
+
+  if (onNavigate) {
+    history.listen((update) => {
+      onNavigate({ pathname: update.location.pathname });
+    });
   }
 
-  // Listen for navigation events and notify the container, listener is internal method of history
-  history.listen((location) => {
-    if (onNavigate) {
-      onNavigate(location);
-    }
-  });
-
-  if (!root) {
-    root = createRoot(el);
-  }
+  const root = createRoot(el);
   root.render(<App onSignIn={onSignIn} history={history} />);
 
   return {
     onParentNavigate({ pathname: nextPathname }) {
       const { pathname } = history.location;
-      console.log('nextPathname from <AuthApp>', nextPathname);
+
       if (pathname !== nextPathname) {
         history.push(nextPathname);
       }
@@ -40,20 +32,16 @@ const mount = (el, { onSignIn, onNavigate, defaultHistory, initialPath }) => {
   };
 };
 
-const unmount = () => {
-  if (root) {
-    root.unmount();
-    root = null;
-  }
-  // Reset history so it can be recreated on next mount
-  history = null;
-};
-
+// If we are in development and in isolation,
+// call mount immediately
 if (process.env.NODE_ENV === 'development') {
-  const devRoot = document.getElementById('_app-auth-root');
+  const devRoot = document.querySelector('#_app-auth-root');
+
   if (devRoot) {
     mount(devRoot, { defaultHistory: createBrowserHistory() });
   }
 }
 
-export { mount, unmount };
+// We are running through container
+// and we should export the mount function
+export { mount };
