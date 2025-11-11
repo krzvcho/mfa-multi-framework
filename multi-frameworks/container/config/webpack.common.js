@@ -13,7 +13,7 @@ function createSharedDeps(dependencies) {
         }
 
         // Configure React and React DOM as singletons
-        if (dep === 'react' || dep === 'react-dom') {
+        if (dep === 'react' || dep === 'react-dom' || dep === 'react-router-dom') {
             acc[dep] = {
                 singleton: true,
                 requiredVersion: dependencies[dep],

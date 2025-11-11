@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Router } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  BrowserRouter,
+  Router,
+  useInRouterContext,
+} from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'; // MUI v7 imports
 import SignIn from './components/Signin';
 import SignUp from './components/Signup';
@@ -8,33 +14,56 @@ const theme = createTheme({
   palette: {
     text: {
       primary: '#000000',
-      secondary: '#555555', // This is what "text.secondary" uses
+      secondary: '#555555',
     },
-    // ... other palette customizations
   },
 });
 
+const RoutesContent = ({ onSignIn }) => (
+  <Routes>
+    <Route path="/auth/signin" element={<SignIn onSignIn={onSignIn} />} />
+    <Route path="/auth/signup" element={<SignUp onSignIn={onSignIn} />} />
+  </Routes>
+);
+
 const App = ({ history, onSignIn }) => {
-  const [location, setLocation] = useState(history.location);
+  const inRouter = useInRouterContext();
 
-  useEffect(() => {
-    // Listen to history changes and update location state
-    const unlisten = history.listen((update) => {
-      setLocation(update.location);
-    });
+  if (inRouter) {
+    return (
+      // <ThemeProvider theme={theme}>
+      //   <CssBaseline />
+        <RoutesContent onSignIn={onSignIn} />
+      // </ThemeProvider>
+    );
+  }
 
-    return unlisten; // Clean up the listener on unmount
-  }, [history]);
+  if (history) {
+    const [location, setLocation] = useState(history.location);
+
+    useEffect(() => {
+      const unlisten = history.listen(({ location: nextLocation }) => {
+        setLocation(nextLocation);
+      });
+      return unlisten;
+    }, [history]);
+
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router location={location} navigator={history}>
+          <RoutesContent onSignIn={onSignIn} />
+        </Router>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router location={location} navigator={history}>
-        <Routes>
-          <Route path="/auth/signin" element={<SignIn onSignIn={onSignIn} />} />
-          <Route path="/auth/signup" element={<SignUp onSignIn={onSignIn} />} />
-        </Routes>
-      </Router>
+      <BrowserRouter>
+        <RoutesContent onSignIn={onSignIn} />
+      </BrowserRouter>
     </ThemeProvider>
   );
 };
