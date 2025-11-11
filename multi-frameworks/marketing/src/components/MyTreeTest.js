@@ -20,25 +20,22 @@ const treeStyle = {
 const ITEMS_PER_PAGE = 50;
 
 const MyTreeTest = () => {
-  const [page, setPage] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const treeRef = useRef(null);
 
+  // Always keep the root, limit only its direct children
   const visibleData = {
     ...someData,
-    children: someData.children.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE),
+    children: someData.children.slice(0, visibleCount),
   };
 
   useEffect(() => {
     const handleScroll = () => {
       const el = treeRef.current;
       if (el && el.scrollTop + el.clientHeight >= el.scrollHeight - 10) {
-        setPage((prev) =>
-          prev < Math.floor(someData.children.length / ITEMS_PER_PAGE)
-            ? prev + 1
-            : prev
+        setVisibleCount((prev) =>
+          Math.min(prev + ITEMS_PER_PAGE, someData.children.length)
         );
-        // Optionally, scroll back to top after loading new batch:
-        if (el) el.scrollTop = 0;
       }
     };
     const el = treeRef.current;
